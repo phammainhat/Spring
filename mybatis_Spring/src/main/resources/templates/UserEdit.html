@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Edit User</title>
+<link rel="stylesheet" type="text/css" th:href="@{/theme/login/style.css}">
+</head>
+<body>
+	<center><b><h1 style="color: white; margin-bottom: -50px;">Edit User</h1></b></center>
+	<div class="login-page">
+	  <div class="form">
+	    <form class="login-form" action="#" th:action="@{/edit}" th:object="${user}" method="post">
+	      <input type="text" placeholder="username" th:field="*{account.username}"/>
+	      <input type="text" placeholder="password" th:field="*{account.password}"/>
+	      <input type="text" placeholder="fullname" th:field="*{fullname}"/>
+	      <input type="text" placeholder="email" th:field="*{email}"/>
+	      <input type="text" placeholder="phone" th:field="*{phone}"/>
+	      <input style="display:none" type="text" th:field="*{idaccount}"/>
+	      <button type="submit">Edit User</button>
+	    </form>
+	  </div>
+	</div>
+</body>
+</html>

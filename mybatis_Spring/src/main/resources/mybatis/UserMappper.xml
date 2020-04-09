@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.mybatis.mapper.UserMapper" >
+    <!--<cache />-->
+    <resultMap id="baseResultMap" type="User" >
+        <result column="iduser" property="iduser" jdbcType="INTEGER" />
+        <result column="fullname" property="fullname" jdbcType="VARCHAR" />
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="idaccount" property="idaccount" jdbcType="INTEGER" />
+        <association  property="account" resultMap="com.spring.mybatis.mapper.UserMapper.accountResult"/>
+        <!--<association property="account" javaType="Account">
+	        <result column="idaccount" property="idaccount"/>
+	        <result column="name" property="name"/>
+	        <result column="aaa" property="aaa"/>
+        </association>-->
+    </resultMap>
+	<!-- select all user -->
+    <select id="findAll" resultMap="baseResultMap" parameterType="User">
+        select * from user u, account a where u.idaccount=a.idaccount;
+    </select>
+    <select id="findById" resultMap="baseResultMap" parameterType="User">
+        select * from user u, account a where u.idaccount=a.idaccount and a.idaccount=#{id};
+    </select>
+    <!-- insert table account -->
+    <insert id="insertRegisterAccount" parameterType="User">
+    	insert into account(username, password) value(#{account.username}, #{account.password});
+    </insert>
+ 	<!-- last id account -->
+    <select id="selectLastIdAccount" resultMap="accountResult">
+        SELECT max(idaccount) as idaccount from account;
+    </select>  
+    <!-- insert table user -->
+    <insert id="insertRegisterUser" parameterType="User">
+    	insert into user(fullname, email, phone, idaccount) value(#{fullname}, #{email}, #{phone}, #{idaccount});
+    </insert>  
+    
+    <!-- Check Login -->
+    <select id="selectLogin" resultMap="accountResult">
+        SELECT * from account where username=#{username} and password=#{password};
+    </select> 
+    
+    <!-- DeleteUser -->
+    <delete id="deleteAccount" parameterType="int">
+    	DELETE from account where idaccount = #{id};
+    </delete>    
+    <delete id="deleteUser" parameterType="int">
+    	DELETE from user where idaccount = #{id};
+    </delete>
+    
+    <!-- Update User -->
+    <update id="updateAccount" parameterType="User">
+    	UPDATE account set username = #{account.username}, password = #{account.password} where idaccount=#{idaccount};
+    </update>
+    <update id="updateUser" parameterType="User">
+    	UPDATE user set fullname = #{fullname}, email=#{email}, phone=#{phone} where idaccount=#{idaccount};
+    </update>
+</mapper>

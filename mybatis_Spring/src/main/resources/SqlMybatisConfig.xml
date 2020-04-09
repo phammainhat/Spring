@@ -1,0 +1,16 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+<configuration>
+ 
+    <typeAliases>
+        <typeAlias alias="User" type="com.spring.mybatis.model.User" />
+        <typeAlias alias="Account" type="com.spring.mybatis.model.Account" />
+    </typeAliases>
+ 
+    <mappers>
+        <mapper resource="mybatis/UserMappper.xml" />
+        <mapper resource="mybatis/AccountMappper.xml" />
+    </mappers>
+ 
+</configuration>
