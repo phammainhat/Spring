@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Login</title>
+<link rel="stylesheet" type="text/css" th:href="@{/theme/login/style.css}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<center><b><h1 style="color: white; margin-bottom: -50px;">Login</h1></b></center>
+	<div class="login-page">
+	  <div class="form">
+	    <form class="login-form" th:object="${account}" method="post">
+	      <input type="text" placeholder="username" th:field="*{username}" id="username" required/>
+	      <input type="password" placeholder="password"  th:field="*{password}" id="password" required/>
+	      <button type="button" id="submit_click">login</button>
+	      <p class="message">Not registered? <a href="register">Create an account</a></p>
+	    </form>
+	    <div id="ajax-response"></div>
+	  </div>
+	</div>
+<script type="text/javascript">
+	$("#submit_click").click(function(){
+		var userData = {
+				username : $("#username").val(),
+				password : $("#password").val()
+		};
+		$.ajax({
+			type : "POST",
+			contentType : "application/json",
+			url : "postUser",
+			data : JSON.stringify(userData),
+			dataType : 'json',			
+			success : function(data) {
+				console.log(data);
+				if(data==1){
+					window.location="/listUser";
+				}
+				else{
+					alert("Worng User name or Password");
+				}
+			}
+		});		
+	});
+</script>
+</body>
+</html>

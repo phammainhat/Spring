@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://cdn.webix.com/edge/webix.css" type="text/css">
+	<script src="https://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+	<title>Webix</title>
+  <style type="text/css">
+  	body {
+  		background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);	
+  	};
+    .webix_inp_label{
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+	<script type="text/javascript">
+// var form ={
+//   id:"form1",
+//   view:"form", scroll:false,
+//   width:300,
+//   elements:[
+//     { view:"text", name: "username", label:"UserName:"},
+//     { view:"text", name: "password", label:"Password:"},
+//     { view:"text", name: "fullname", label:"Full Name:"},
+//     { view:"text", name: "email", label:"Email:"},
+//     { margin:5, cols:[
+//       { view:"button", type:"icon", icon:"wxi-pencil", label:"Save", click:save },
+//     ]}
+//   ]
+// };
+// var rule = {
+// 	"email":webix.rules.isEmail,
+// 	"username":webix.rules.isNotEmpty,
+// 	"password":webix.rules.isNotEmpty,
+// 	"fullname":webix.rules.isNotEmpty,
+//     email:function(value, all_values, email){ 
+//         var data = JSON.stringify({email: value});
+//         console.log("1. "+data);
+// //         if(webix.rules.isNotEmpty(value)){
+// //        		console.log("is not empty");
+// //             webix.ajax().headers({"Content-type":"application/json"}).post("findEmail", data).then(function(data){
+// //     			console.log("2. "+data.text());
+// //     			if(data.text()!=1){
+// //     				console.log("3.1 hop le");
+// //     				return true;
+// //     			}
+// //     			else{
+// //     				console.log("3.1 trung");
+// //     				return false;
+// //     			}
+// //     		});        		
+// //        	}
+// //         else{
+// //         	console.log("4 ket thuc");	
+// //         	return true;
+// //         }
+
+
+// //         webix.ajax().headers({"Content-type":"application/json"}).post("findEmail", data).then(function(data){
+// //         	console.log("2. "+data.text());
+// //         });
+        
+//         webix.attachEvent("onBeforeAjax", function(mode, url, params, x, headers, files, defer){
+//         	  //defer is promise created for the request
+//         	  defer.then(function(data){
+//         	    console.log("response", data.json());
+//         	  }, function(x){
+//         	    console.log("err", x)
+//         	  });
+//         	});
+        
+//         console.log("4 ket thuc");	
+//     }
+// };
+var rule = {
+	 	"email":webix.rules.isEmail,
+	 	"username":webix.rules.isNotEmpty,
+	 	"password":webix.rules.isNotEmpty,
+	 	"fullname":webix.rules.isNotEmpty	
+}
+
+var form = 
+{
+  view:"form",
+  id:"form1",
+  scroll:false,
+  width:350,
+  margin:3,
+  rules:rule,
+  elementsConfig:{
+    labelPosition:"top",
+    labelWidth:140,
+    bottomPadding:18
+  },
+  elements:[
+    { view:"text", name: "username", label:"UserName:", invalidMessage:"UserName can not be empty" },
+    { view:"text", name: "password", label:"Password:", invalidMessage:"Password can not be empty" },
+    { view:"text", name: "fullname", label:"Full Name:", invalidMessage:"FullName can not be empty"},
+    { view:"text", name: "email", label:"Email:", invalidMessage:"Incorrect e-mail address" },
+    { view:"button", type:"icon", icon:"wxi-pencil", label:"Save", click:save }
+  ]
+
+};
+
+// webix.ui({
+//   rows:[
+//     {template:"<h1><b>Register</b></h1>", height:60},
+//     form
+//   ]
+// }); 
+
+webix.ui({
+	  view:"window",
+	  id:"win3",
+	  height:500,
+	  width:450, 
+	  position:"center",
+	  head:{
+	    view:"toolbar", cols:[
+	      { width:4 },
+	      { view:"label", label: "REGISTER" }
+	    ]
+	  },
+	  body:{
+		  rows:[
+			    form
+			  ]
+	  }
+	}).show();
+
+function save(){
+    var form = this.getParentView();
+    if (form.validate()){
+      //webix.alert("Correct data!")
+	var data = JSON.stringify( $$("form1").getValues());
+	console.log(data);
+	webix.ajax().headers({"Content-type":"application/json"}).post("result", data).then(function(data){
+	   console.log(data.text());
+	   if(data.text()!=1){webix.message("Insert Fail");}
+	   else{webix.message("Insert Complete");webix.send("/listWebix");}
+	 }); 
+    } 
+}
+
+// function save(){
+//   var data = JSON.stringify( $$("form1").getValues());
+//   console.log(data);
+//   webix.ajax().headers({"Content-type":"application/json"}).post("result", data).then(function(data){
+//      console.log(data.text());
+//      if(data.text()!=1){webix.message("Insert Fail");}
+//      else{webix.message("Insert Complete");webix.send("/listWebix");}
+//    }); 
+// }
+
+	</script>
+</body>
+</html>

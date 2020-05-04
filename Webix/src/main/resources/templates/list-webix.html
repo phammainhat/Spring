@@ -1,0 +1,159 @@
+	<!DOCTYPE html>
+	<html>
+	<head>
+	  <link rel="stylesheet" href="https://cdn.webix.com/edge/webix.css" type="text/css">
+	  <script src="https://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+	  <title>Webix</title>
+	  <style type="text/css">
+	  body{
+	  	background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+	  }
+	    .rank .webix_cell, .rank.webix_hcell {
+	    text-align:center;
+	    }
+	  </style>
+	</head>
+	<body>
+	  <script type="text/javascript">
+	  webix.ui({
+		  view:"popup",
+		  id:"editwin",
+		  head:"Edit.. ",
+		  body:{
+		    view:"form", id:"editform", elements:[
+		      { view:"text", name: "username", label:"UserName:"},
+		      { view:"text", name: "password", label:"Password:"},
+		      { view:"text", name: "fullname", label:"Full Name:"},
+		      { view:"text", name: "email", label:"Email:"},
+		      { cols:[
+		        { view:"button", value:"Cancel", click:function(){
+		          this.getTopParentView().hide(); 
+		        }},
+		        { view:"button", type:"form", value:"Save", click:save }
+	// 	        { view:"button", type:"form", value:"Save", click:function(){
+	// 	          this.getFormView().save();
+	// 	          this.getTopParentView().hide(); 
+	// 	        }}
+		      ]}
+		    ]
+		  }
+		});
+	
+		var grid = //webix.ui({
+		{
+		  view:"datatable",id:"table",
+		  autoConfig:true,
+		  columns:[
+		    { id:"username", header:"User Name", css:"rank", width:120 },
+		    { id:"password", header:"Password", width:120 },
+		    { id:"fullname", header:"Full Name", width:120 },
+		    { id:"email", header:"Email", width:120 },
+		    { id:"", 
+		     template:"<input class='delbtn' type='button' value='Delete'>",  
+		     css:"padding_less",
+		     width:100 },
+		    { id:"", 
+		     template:"<input class='addbtn' type='button' value='Edit'>", 
+		     css:"padding_less",
+		     width:100 }
+		  ],
+		  autoheight:true,
+		  autowidth:true,
+		  select:true,
+		  url: "all",
+		  on:{
+		    onItemDblClick:function(e, id, node){
+		      $$("editwin").show(node);
+		    }
+		  }
+		}
+		//});
+
+		webix.ui({
+			  id:"mywin",
+			  view:"window",
+			  left:200,
+			  top:50,
+			  //position:"center",
+			  head:{
+			    view:"toolbar", elements:[
+			      {template:"<center><h3>List User</h3></center>"},
+			      { view:"button", value:"Add User", width:150, click:function(){
+			    	  webix.send("/registerWebix");
+			        //this.getTopParentView().hide();
+			      }}
+			    ]
+			  },
+			  body:{
+				  rows:[
+						grid
+					  ]
+			  }
+			}).show();
+		
+		$$("editform").bind($$("table"));
+	
+		  $$("table").on_click.delbtn=function(e, id, trg){
+			    //id.column - column id
+			    //id.row - row id
+			    webix.message("Delete row: "+id);
+			    var item = this.getItem(id);
+			  	var url = "/delete/"+item.iduser;
+			    webix.confirm({
+			        title: "Delete",
+			        text: "Are you sure you want to delete the selected item?",
+// 			        callback: function(result) {
+// 						webix.ajax().headers({"Content-type":"application/json"}).del(url).then(function(data){
+// 						      console.log(data.text());
+// 						      if(data.text()!=1){
+// 						    	  webix.message("Delete fail");
+// 						      }
+// 						      else{
+// 						    	  webix.message("complete delete"+id);
+// 						    	  $$("table").remove(id);
+// 						      }
+// 						 }); 
+// 			        }
+			      })
+			      .then(function(){
+						webix.ajax().headers({"Content-type":"application/json"}).del(url).then(function(data){
+						      console.log(data.text());
+						      if(data.text()!=1){
+						    	  webix.message("Delete fail");
+						      }
+						      else{
+						    	  webix.message("complete delete"+id);
+						    	  $$("table").remove(id);
+						      }
+						 });		    	  
+			      })
+			      
+			      .fail(function(){
+			    	  this.getTopParentView().hide(); 
+			      });
+			    //return false;
+	
+			  };
+	
+		  $$("table").on_click.addbtn=function(e, id, trg){
+			  $$("editwin").show(trg);
+		  };
+		function save(){
+		  var data = JSON.stringify( $$("editform").getValues());
+		  console.log(data);
+	      webix.ajax().headers({"Content-type":"application/json"}).post("update", data).then(function(data){
+	        console.log(data.text());
+	        if(data.text()!=1){
+	        	webix.message("wrong update");
+	        }
+	        else{
+	        	webix.message("complete update");
+	        	$$("table").clearAll();
+			    $$("table").load("all");
+	        }
+	      }); 
+		  this.getTopParentView().hide(); 
+		}
+	  </script>
+	</body>
+	</html>
